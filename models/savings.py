@@ -1,0 +1,50 @@
+from account import Account
+class SavingsAccount(Account):
+
+    def __init__(self, account_number, name, pin, balance=0, interest_rate= 0.08, min_balance = 500):
+        super().__init__(name, pin, balance)
+        self.interest_rate = interest_rate
+        self.min_balance = min_balance
+        self.account_number = account_number
+
+    def show_details(self):
+        print(f"Account Holder: {self.name}")
+        print(f"Account Number: {self.account_number}")
+        print(f"Account Type: Savings Account")
+
+    def deposit(self,deposit):
+        if deposit <0:
+            print("invailed amount")
+            
+        self.balance += deposit
+        print(f"₹{deposit} depositid succsesfully.")
+        
+
+    def withrawl (self , withrawl):
+        if withrawl < 0 :
+            raise ValueError("Invalid Amount") 
+        elif  self.balance - self.deposit < self.min_balance:
+            print("this is your min_balance")
+            
+    
+                 
+
+
+account = SavingsAccount(
+    "ACC1001",
+    "Jitendra",
+    "2480",
+    2000
+)
+
+account.show_details()
+
+print("Initial Balance:", account.check_balance())
+
+account.deposit(1000)
+
+print("Balance after deposit:", account.check_balance())
+
+account. withrawl(-500)
+
+print("Balance after withdrawal:", account.check_balance())
