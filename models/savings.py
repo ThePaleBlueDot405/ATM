@@ -1,7 +1,7 @@
 from account import Account
 class SavingsAccount(Account):
 
-    def __init__(self, account_number, name, pin, balance=0, interest_rate= 0.08, min_balance = 500):
+    def __init__(self, account_number, name, pin, balance=0, interest_rate= 0.15, min_balance = 500):
         super().__init__(name, pin, balance)
         self.interest_rate = interest_rate
         self.min_balance = min_balance
@@ -23,8 +23,22 @@ class SavingsAccount(Account):
     def withrawl (self , withrawl):
         if withrawl < 0 :
             raise ValueError("Invalid Amount") 
-        elif  self.balance - self.deposit < self.min_balance:
-            print("this is your min_balance")
+        elif self.balance - withrawl < self.min_balance:
+            raise ValueError("Transaction Declined: Available Balance Exceeded")
+        else :
+            self.balance= self.balance-withrawl
+            return self.balance
+
+    def intrest(self , time):
+        if time<0 :
+            raise ValueError("Invalid Value")
+        else:
+            inters = 0
+            self.balance = self.balance+ time*12*self.interest_rate*self.balance
+
+
+        
+        
             
     
                  
@@ -45,6 +59,11 @@ account.deposit(1000)
 
 print("Balance after deposit:", account.check_balance())
 
-account. withrawl(-500)
+account. withrawl(500)
 
 print("Balance after withdrawal:", account.check_balance())
+
+account.intrest(5)
+print("Balance after Intrest:", account.check_balance())
+
+
