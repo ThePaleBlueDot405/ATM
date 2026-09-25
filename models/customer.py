@@ -7,6 +7,5 @@ class coustmer :
         self.balance = balance
         self.accounttype = accounttype
         self.email = email
-
-    def showdetails(self,details):
-        pass
+        
+    

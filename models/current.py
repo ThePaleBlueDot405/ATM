@@ -34,16 +34,3 @@ class CurrentAccount(Account):
 
     
 
-account = CurrentAccount(
-    "ACC1001",
-    "Jitendra",
-    "2480",
-    2000,
-    10000
-)
-
-account. withrawl(5000)
-
-print("Balance after withdrawal:", account.check_balance())
-print(account.overdraft_limit)
-
