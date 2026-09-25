@@ -6,6 +6,11 @@ class Account:
 # Function to cheak balance
     def check_balance(self):
         return self.balance
+    
+    def show_details(self):
+            print(f"Account Holder: {self.name}")
+            print(f"Account Number: {self.account_number}")
+            print(f"Account Balance: {self.balance}")
 # Function to deposite balance
     def deposit(self, amount):
         if amount <= 0:
@@ -14,9 +19,9 @@ class Account:
         self.balance += amount
         print(f"₹{amount} depositid succsesfully.")
         
-    def withrawl_amount(self, withrawl):
-        self.withrawl = withrawl
-        if withrawl <= self.balance:
-          self.balance -= withrawl
+    def withrawl_amount(self, withdrawal_amount):
+        self.withdrawal_amount = withdrawal_amount
+        if withdrawal_amount <= self.balance:
+          self.balance -= withdrawal_amount
         return self.balance
     

@@ -1,4 +1,4 @@
-from account import Account
+from models.account import Account
 class CurrentAccount(Account):
 
     def __init__(self, account_number, name, pin, balance=0,Overdraft_Limit=0):
@@ -10,13 +10,15 @@ class CurrentAccount(Account):
         print(f"Account Holder: {self.name}")
         print(f"Account Number: {self.account_number}")
         print(f"Account Type: Savings Account")
-
-    def deposit(self,deposit):
-        if deposit <0:
-            print("invailed amount")
+   
+   
+    # We dont need deposite fucntion because its alrday exixt in Account class
+    # def deposit(self,deposit):
+    #     if deposit <0:
+    #         print("invailed amount")
             
-        self.balance += deposit
-        print(f"₹{deposit} depositid succsesfully.")
+    #     self.balance += deposit
+    #     print(f"₹{deposit} depositid succsesfully.")
         
 
     def withrawl (self , withrawl):
