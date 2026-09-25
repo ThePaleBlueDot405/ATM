@@ -7,9 +7,9 @@ class CurrentAccount(Account):
         self.overdraft_limit = Overdraft_Limit
 
     def show_details(self):
-        print(f"Account Holder: {self.name}")
-        print(f"Account Number: {self.account_number}")
+        super().show_details()
         print(f"Account Type: Savings Account")
+        print(f"Overdraft Limit: {self.overdraft_limit}")
    
    
     # We dont need deposite fucntion because its alrday exixt in Account class

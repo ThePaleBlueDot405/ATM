@@ -8,9 +8,11 @@ class SavingsAccount(Account):
         self.account_number = account_number
 
     def show_details(self):
-        print(f"Account Holder: {self.name}")
-        print(f"Account Number: {self.account_number}")
+        super().show_details()
         print(f"Account Type: Savings Account")
+        print(f"Minum balnce: {self.min_balance}" )
+        
+        
     # We dont need deposite fucntion because its alrday exixt in Account class
     # def deposit(self,deposit):
     #     if deposit <0:

@@ -1,3 +1,6 @@
+import hashlib # to encrypt the pin
+
+
 class Account:
     def __init__(self, name, pin, balance=0):
         self.name = name

@@ -1,21 +1,22 @@
+
 from models.savings import SavingsAccount
 
+name = input("Enter name: ")
+account_number = input("Enter account number: ")
+pin = input("Enter PIN: ")
+balance = float(input("Enter initial balance: "))
+interest_rate = float(input("Enter interest rate: "))
+min_balance = float(input("Enter minimum balance: "))
 
 account = SavingsAccount(
-    "ACC1001",
-    "Jitendra",
-    "2480",
-    2000
+    account_number,
+    name,
+    pin,
+    balance,
+    interest_rate,
+    min_balance
 )
-
-# account.show_details()
-
-# print("Initial Balance:", account.check_balance())
-
-account.deposit(1000)
-
-print("Balance after deposit:", account.check_balance())
-
+account.intrest(4)
 # account. withrawl_amount(500)
 
 # print("Balance after withdrawal:", account.check_balance())
