@@ -1,7 +1,7 @@
 from models.account import Account
 class CurrentAccount(Account):
 
-    def __init__(self, account_number, name, pin, balance=0,Overdraft_Limit=0):
+    def __init__(self, account_number, name, pin, balance=0,Overdraft_Limit=1000):
         super().__init__(name, pin, balance)
         self.account_number = account_number
         self.overdraft_limit = Overdraft_Limit
