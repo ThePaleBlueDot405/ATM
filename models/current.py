@@ -24,14 +24,14 @@ class CurrentAccount(Account):
     def withrawl (self , withrawl):
         if withrawl < 0 :
             raise ValueError("Invalid Amount") 
-        elif withrawl>self.balance:
+        if withrawl>self.balance:
             extra = withrawl - self.balance
             self.overdraft_limit= self.overdraft_limit - extra
             self.balance= 0
             return self.overdraft_limit
-        else :
-            self.balance= self.balance-withrawl
-            return self.balance
+
+        self.balance= self.balance-withrawl
+        return self.balance
     
 
     

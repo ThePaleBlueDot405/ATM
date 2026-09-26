@@ -25,19 +25,14 @@ class SavingsAccount(Account):
     def withrawl (self , withrawl):
         if withrawl < 0 :
             raise ValueError("Invalid Amount") 
-        elif self.balance - withrawl < self.min_balance:
+        if self.balance - withrawl < self.min_balance:
             raise ValueError("Transaction Declined: Available Balance Exceeded")
-        else :
-            self.balance= self.balance-withrawl
-            return self.balance
+        
+        self.balance= self.balance-withrawl
+        return self.balance
 
-    def intrest(self , time):
-        if time<0 :
-            raise ValueError("Invalid Value")
-        else:
-            inters = 0
-            self.balance = self.balance+ time*12*self.interest_rate*self.balance
-
+    
+            
 
         
         
