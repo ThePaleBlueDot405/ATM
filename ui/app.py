@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QPushButton,
     QComboBox,
+    QDialog,
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
@@ -20,6 +21,9 @@ from PyQt5.QtCore import Qt
 from models.savings import SavingsAccount
 from models.current import CurrentAccount
 from models.transaction import Transaction
+
+# the pop-up form used to open a new account
+from ui.new_account_dialog import NewAccountDialog
 
 
 # ---------------- SETTINGS ----------------
@@ -89,8 +93,13 @@ class ATMWindow(QWidget):
             text = account_number + " - " + account.name
             self.card_box.addItem(text, account_number)
 
+        # button to open a new account (only usable before login)
+        self.new_account_button = QPushButton("Open New Account")
+        self.new_account_button.clicked.connect(self.open_new_account)
+
         card_layout.addWidget(card_label)
         card_layout.addWidget(self.card_box)
+        card_layout.addWidget(self.new_account_button)
         main_layout.addLayout(card_layout)
 
         # ---------- ATM screen (two labels stacked on top of each other) ----------
@@ -200,6 +209,12 @@ class ATMWindow(QWidget):
         key.setFont(QFont("Arial", 13))
         return key
 
+    def set_card_area_enabled(self, enabled):
+        # The card list and the Open New Account button are used together:
+        # both are usable before login and both are locked after login.
+        self.card_box.setEnabled(enabled)
+        self.new_account_button.setEnabled(enabled)
+
     def set_menu_enabled(self, enabled):
         # enabled = True  -> user can click the menu buttons
         # enabled = False -> menu buttons are greyed out
@@ -232,7 +247,8 @@ class ATMWindow(QWidget):
         self.show_message(
             "WELCOME TO THE ATM\n\n"
             "1. Select your card at the top\n"
-            "2. Press ENTER"
+            "2. Press ENTER\n\n"
+            "New customer? Click 'Open New Account'."
         )
         self.refresh_input_label()
 
@@ -241,7 +257,7 @@ class ATMWindow(QWidget):
         self.current_account = None
         self.typed = ""
         self.state = STATE_CARD
-        self.card_box.setEnabled(True)
+        self.set_card_area_enabled(True)
         self.set_menu_enabled(False)
         self.refresh_input_label()
         self.show_message(message)
@@ -333,7 +349,7 @@ class ATMWindow(QWidget):
         self.current_account = self.accounts[account_number]
         self.typed = ""
         self.state = STATE_PIN
-        self.card_box.setEnabled(False)
+        self.set_card_area_enabled(False)
         self.refresh_input_label()
         self.show_message("Card accepted.\n\nEnter your 4 digit PIN\nand press ENTER.")
 
@@ -520,3 +536,80 @@ class ATMWindow(QWidget):
 
         self.save_transaction("Withdrawal", amount)
         self.finish_transaction("Rs. " + str(amount) + " withdrawn.")
+
+    # =====================================================
+    #                  OPEN NEW ACCOUNT
+    # =====================================================
+
+    def open_new_account(self):
+        # Show the pop-up form. exec_() waits here until the form is closed.
+        dialog = NewAccountDialog(self)
+        result = dialog.exec_()
+
+        # the user pressed Cancel or closed the form
+        if result != QDialog.Accepted:
+            return
+
+        data = dialog.account_data
+        account = self.add_account(
+            data["name"],
+            data["type"],
+            data["pin"],
+            data["deposit"]
+        )
+
+        text = "ACCOUNT CREATED\n\n"
+        text = text + "Name: " + account.name + "\n"
+        text = text + "Account No: " + account.account_number + "\n"
+        text = text + "Balance: Rs. " + format(account.check_balance(), ",.2f") + "\n\n"
+        text = text + "Select this card at the top\nand press ENTER to log in."
+        self.show_message(text)
+
+    def add_account(self, name, account_type, pin, deposit):
+        # Creates the account object and registers it in the ATM.
+        # (Separate from open_new_account so it has no pop-up inside.)
+
+        # Which class and which account-number prefix to use for each type
+        account_classes = {
+            "Savings": SavingsAccount,
+            "Current": CurrentAccount,
+        }
+        prefixes = {
+            "Savings": "SAV",
+            "Current": "CUR",
+        }
+
+        account_class = account_classes[account_type]
+        prefix = prefixes[account_type]
+
+        # Find the first free number: SAV002, SAV003 ... (SAV001 already exists)
+        count = 1
+        account_number = prefix + str(count).zfill(3)
+        while account_number in self.accounts:
+            count = count + 1
+            account_number = prefix + str(count).zfill(3)
+
+        # Both SavingsAccount and CurrentAccount take
+        # (account_number, name, pin, balance) as their first four values.
+        account = account_class(account_number, name, pin, deposit)
+
+        # register the account in the ATM
+        self.accounts[account_number] = account
+        self.history[account_number] = []
+
+        # the opening deposit is the first line of the mini statement
+        if deposit > 0:
+            transaction = Transaction(
+                account,
+                "Opening",
+                deposit,
+                account.check_balance()
+            )
+            self.history[account_number].append(transaction)
+
+        # add it to the card list and select it
+        text = account_number + " - " + name
+        self.card_box.addItem(text, account_number)
+        self.card_box.setCurrentIndex(self.card_box.count() - 1)
+
+        return account
