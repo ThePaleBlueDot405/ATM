@@ -1,4 +1,3 @@
-
 # from models.savings import SavingsAccount
 
 # name = input("Enter name: ")
@@ -22,9 +21,17 @@
 # # print("Balance after withdrawal:", account.check_balance())
 
 
+import sys
+
+# QApplication is the object that runs every PyQt5 program
+from PyQt5.QtWidgets import QApplication
+
 from models.savings import SavingsAccount
 from models.current import CurrentAccount
 from models.transaction import Transaction
+
+# our ATM window (ui/app.py)
+from ui.app import ATMWindow
 
 
 savings_account = SavingsAccount(
@@ -41,8 +48,34 @@ current_account = CurrentAccount(
     2000
 )
 
-print("Savings Balance:", savings_account.check_balance())
+# Old console test prints. The UI shows the balance now, so they are commented out.
+# print("Savings Balance:", savings_account.check_balance())
+# print("Current Balance:", current_account.check_balance())
 
 
+def main():
+    # Put all accounts in one dictionary.
+    # key = account number, value = account object
+    # The UI uses this dictionary to fill the card list and to find the account.
+    accounts = {
+        savings_account.account_number: savings_account,
+        current_account.account_number: current_account,
+    }
 
-print("Current Balance:", current_account.check_balance())
+    # 1. create the application
+    app = QApplication(sys.argv)
+
+    # 2. create our ATM window and give it the accounts
+    window = ATMWindow(accounts)
+
+    # 3. show the window on screen
+    window.show()
+
+    # 4. start the event loop (keeps the window open and listens to clicks)
+    #    sys.exit makes sure the program closes properly when the window is closed
+    sys.exit(app.exec_())
+
+
+# This runs main() only when we start this file directly (python main.py)
+if __name__ == "__main__":
+    main()
